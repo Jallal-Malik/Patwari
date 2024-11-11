@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avax Punks NFT Minting</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: rgb(41, 41, 41);
+          color: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+      }
+      h3 {
+          color: #ff6f61;
+          font-size: 2.2rem;
+          margin-bottom: 17px;
+          margin-top: 1rem;
+      }
+      .h3 {
+        font-size: 1rem;
+        margin-bottom: 11rem;
+        color: #775f75;
+      }
+      .button {
+          background-color: #ff6f61;
+          color: white;
+          padding: 15px 25px;
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          cursor: pointer;
+          margin: 10px;
+          transition: background-color 0.3s ease;
+      }
+      .button:hover {
+          background-color: #ff3b2f;
+      }
+      #message {
+        color: #775f75;
+        margin-top: 3px;
+        font-size: 1.3rem;
+        text-align: center;
+        font-weight: 700;
+        display: flex;
+        place-content: center;
+        gap: 0.5rem;
+      }
+      .container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.8);
+        max-width: 500px;
+        width: 90%;
+        /* position: relative; */
+      }
+      .input-field {
+          padding: 10px;
+          margin: 10px;
+          font-size: 1.2rem;
+          border-radius: 5px;
+          border: 1px solid #ff6f61;
+          color: #775f75;
+          background-color: rgb(41, 41, 41);
+          width: 50%;
+      }
+      .input{
+        text-align: center;
+      }
+      input::placeholder {
+          font-size: 1rem;
+          color: #775f75;
+          text-align: center;
+      }
+      input:focus {
+          border: 1px solid #ff6f61;
+          outline: 1px solid #ff6f61;
+      }
+      .flex {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 2rem;
+      }
+      .img {
+          height: 35px;
+      }
+      .p {
+        width: 100%;
+        color: #775f75;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .li {
+        color: #775f75;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+      .li h2 {
+        font-size: 1.2rem;
+      }
+      .data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .logo {
+        width: 30px;
+        padding-right: 1rem;
+      }
+      .text-brand-orange {
+        color: rgb(235 84 10);
+        height: 30px;
+      }
+      .images {
+        float: right;
+        margin-top: 1rem;
+      }
+
+      /* Media Queries */
+      @media (max-width: 768px) {
+          h3 {
+              font-size: 1.5rem;
+          }
+          .button {
+              font-size: 0.9rem;
+              padding: 12px 20px;
+          }
+          .input-field {
+              font-size: 1rem;
+          }
+          .p, .li {
+              font-size: 0.8rem;
+          }
+          .container {
+              padding: 15px;
+              box-shadow: none;
+          }
+          .images {
+              position: static;
+              display: flex;
+              justify-content: center;
+              gap: 10px;
+              padding-top: 10px;
+          }
+      }
+
+      @media (max-width: 480px) {
+          h3 {
+              font-size: 1.3rem;
+          }
+          .button {
+              font-size: 0.8rem;
+              padding: 10px 15px;
+          }
+          .p, .li {
+              font-size: 0.75rem;
+          }
+          .container {
+              padding: 10px;
+              /* width: 100%; */
+          }
+          .logo {
+              width: 25px;
+          }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="flex">
+            <div>
+                <h3>AvaxPunks</h3>
+            </div>
+            <div>
+                <button id="walletButton" class="button" onclick="toggleWalletConnection()">Connect Wallet</button>
+            </div>
+        </div>
+        <div class="data">
+          <p class="p">Avax Punks is the first-ever collection of Punk NFTs launched on the Avalanche blockchain, offering a unique opportunity to own digital art in a revolutionary ecosystem.</p>
+          <div class="li">
+            <h2>Mint Price</h2>
+            <p>Each NFT is available for minting at 3 AVAX, with no additional gas fees.</p>
+            <h2>Trade on</h2>
+            <p>Once minted, Avax Punks can be traded on Joepegs, the leading NFT marketplace on Avalanche.</p>
+            <h2>Mint Limit</h2>
+            <p>You can mint up to 10 NFTs per wallet, giving collectors the opportunity to own multiple pieces of this exclusive collection.</p>
+          </div>
+        </div>
+        <div class="input">
+            <input type="number" id="nftQuantity" class="input-field" placeholder="Enter quantity" min="1" max="10"  />
+            <button class="button" onclick="mintNFT()">Mint NFT</button>
+        </div>
+        <div id="message"></div>
+        <div class="images">
+          <a href="https://joepegs.com/" target="_blank"><img class="logo" src="./images/joepegs.png" alt=""></a>
+          <a href="https://x.com/Avax__Punks" target="_blank"><img class="logo" src="./images/twitter.png" alt=""></a>
+          <a href="https://arena.social/Avax__Punks" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 42" fill="none" class="logo text-brand-orange">
+              <g fill="currentColor" clip-path="url(#a)">
+                <path d="M31.463 15.472V42h-.678V17.454c0-8.154-6.64-14.794-14.794-14.794-8.153 0-14.776 6.623-14.776 14.794V42H.537V15.472C.537 6.919 7.455 0 16.009 0c8.552 0 15.454 6.919 15.454 15.472Z"></path>
+                <path d="M28.768 16.984v22.513h-.678V18.705c0-6.675-5.423-12.099-12.099-12.099-6.675 0-12.1 5.406-12.1 12.082v20.791h-.677V16.967c0-7.058 5.72-12.777 12.777-12.777 7.058 0 12.777 5.719 12.777 12.777v.017Z"></path>
+                <path d="M26.091 18.497v18.479h-.678V19.939c0-5.197-4.224-9.422-9.422-9.422S6.57 14.742 6.57 19.94v17.037h-.678v-18.48c0-5.58 4.52-10.1 10.1-10.1s10.083 4.52 10.083 10.1h.017Z"></path>
+                <path d="M23.396 20.01v14.463h-.678V21.19a6.733 6.733 0 0 0-6.727-6.727c-3.703 0-6.728 3.024-6.728 6.727v13.282h-.678V20.009a7.412 7.412 0 0 1 7.406-7.405 7.412 7.412 0 0 1 7.405 7.405Z"></path>
+                <path d="M20.72 21.521V31.97h-.679v-9.526a4.055 4.055 0 0 0-4.05-4.05 4.043 4.043 0 0 0-4.05 4.05v9.526h-.679V21.521a4.733 4.733 0 0 1 4.729-4.728c2.608 0 4.711 2.12 4.711 4.729h.017Z"></path>
+                <path d="M18.025 23.034v6.415h-.678v-5.772c0-.747-.608-1.356-1.356-1.356-.747 0-1.356.609-1.356 1.356v5.772h-.678v-6.415c0-1.13.922-2.034 2.034-2.034 1.113 0 2.034.921 2.034 2.034Z"></path>
+              </g>
+              <defs>
+                <clipPath id="a">
+                  <rect width="30.9263" height="42" fill="white" transform="translate(0.536621)"></rect>
+                </clipPath>
+              </defs>
+            </svg>
+          </a>
+        </div>
+    </div>
+
+    <script>
+      let web3;
+      let contract;
+      const contractAddress = "0x72dD3C3Fc01AC82847a32842D929dDd16F856E7b";
+      const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_MINT_PER_TX","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_TOKENS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"baseExtension","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"baseUri","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"flipSaleState","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"isSaleActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_numTokens","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"price","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_baseUri","type":"string"}],"name":"setBaseUri","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"setPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+      const correctNetworkId = 84532;
+      let isConnected = false;
+      const maxNFTs = 10;
+
+      async function toggleWalletConnection() {
+          if (!isConnected) {
+              await connectWallet();
+          } else {
+              disconnectWallet();
+          }
+      }
+
+      async function connectWallet() {
+          if (window.ethereum) {
+              try {
+                  await window.ethereum.request({ method: "eth_requestAccounts" });
+                  web3 = new Web3(window.ethereum);
+                  contract = new web3.eth.Contract(contractABI, contractAddress);
+
+                  const networkId = await web3.eth.net.getId();
+                  if (networkId.toString() !== correctNetworkId.toString()) {
+                      document.getElementById("message").textContent = "Switch to Avalanche C-Chain.";
+                      error()
+                      return;
+                  }
+
+                  isConnected = true;
+                  document.getElementById("walletButton").textContent = "Disconnect";
+                  error()
+                  document.getElementById("message").textContent = "Wallet connected!";
+                  error()
+              } catch (error) {
+                  document.getElementById("message").textContent = `Error: Check wallet.`;
+              }
+          } else {
+              document.getElementById("message").textContent = "Please install MetaMask.";
+              error()
+          }
+      }
+
+      function disconnectWallet() {
+          isConnected = false;
+          document.getElementById("walletButton").textContent = "Connect Wallet";
+          // error()
+          document.getElementById("message").textContent = "Wallet disconnected.";
+          error()
+      }
+
+      async function mintNFT() {
+          if (!isConnected) {
+              document.getElementById("message").textContent = "Wallet not connected.";
+              error()
+              return;
+          }
+
+          const quantity = document.getElementById("nftQuantity").value;
+          
+          if (quantity <= 0 || isNaN(quantity)) {
+              document.getElementById("message").textContent = "Please enter a valid quantity.";
+              error()
+              return;
+          }
+
+          if (quantity > maxNFTs) {
+              document.getElementById("message").textContent = `Per wallet can mint up to ${maxNFTs} NFTs.`;
+              error()
+              return;
+          }
+
+          try {
+              const accounts = await web3.eth.getAccounts();
+              const account = accounts[0];
+              
+              const mintPrice = await contract.methods.price().call();
+              const totalPrice = BigInt(mintPrice) * BigInt(quantity);
+
+              await contract.methods.mint(quantity).send({ from: account, value: totalPrice.toString(), gasPrice: await web3.eth.getGasPrice() });
+
+              document.getElementById("message").textContent = `Minted! Check your NFT on Joepegs!`;
+              error()
+            
+          } catch (error) {
+
+          if (error.message.includes("User denied transaction")) {
+              document.getElementById("message").textContent = "Transaction canceled by user.";
+              error()
+          } else if (error.message.includes("insufficient funds")) {
+              document.getElementById("message").textContent = "Insufficient funds for gas.";
+              error()
+          } else if (error.message.includes("gas")) {
+              document.getElementById("message").textContent = "Gas error or max NFTs minted.";
+              error()
+          } else {
+              document.getElementById("message").textContent = "Transaction failed. Try again.";
+              error()
+          }
+          }
+      }
+
+            function error() { setTimeout(() => {
+                    document.getElementById("message").textContent = ""
+                }, 4000)
+            }
+    </script>
+      
+
+</body>
+</html>
